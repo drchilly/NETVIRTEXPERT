@@ -23,7 +23,7 @@ if __name__ == '__main__':
 #ip = '10.18.113.16'
 #ipaddress = open('list.txt')
     username = 'dragan.ilic'
-    password = 'wersdf123!'
+    password = '????'
     port = '22'
 
 with open (r'list.txt', 'r') as ip_input:
@@ -105,7 +105,7 @@ def upload(ftp, file):
     else:
         ftp.storbinary("STOR " + file, open(file, "rb"), 1024)
 
-ftp = ftplib.FTP('netvirtexpert.zapto.org','ra_ftp_user','csc0raftpneD1r@j0v0!')
+ftp = ftplib.FTP('netvirtexpert.zapto.org','ra_ftp_user','?????')
 os.chdir(os.path.dirname(filepath))
 upload(ftp, filename)
 
