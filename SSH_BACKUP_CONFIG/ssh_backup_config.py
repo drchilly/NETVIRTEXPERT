@@ -97,13 +97,17 @@ with open(filepath, "w") as f:
     f.write(output)
     f.close()
 
-###FTP UPLOAD MORA SE SREDI u slucaju potrebe###
-#session = ftplib.FTP('netvirtexpert.zapto.org','ra_ftp_user','csc0raftpneD1r@j0v0!')
-#os.chdir(os.path.dirname(filepath))
-#ftpfile = open("GigaKOM-2018-12-28-11-39-54", 'r')
-#session.storbinary('STOR ' + "ftpfile", file)
-#ftpfile.close()
-#session.quit()
+###FTP UPLOAD na NETVIRT###
+def upload(ftp, file):
+    ext = os.path.splitext(file)[1]
+    if ext in (".txt", ".htm", ".html"):
+        ftp.storlines("STOR " + file, open(file))
+    else:
+        ftp.storbinary("STOR " + file, open(file, "rb"), 1024)
+
+ftp = ftplib.FTP('netvirtexpert.zapto.org','ra_ftp_user','csc0raftpneD1r@j0v0!')
+os.chdir(os.path.dirname(filepath))
+upload(ftp, filename)
 
 #disconnect
 remote_conn.send("exit\n")
