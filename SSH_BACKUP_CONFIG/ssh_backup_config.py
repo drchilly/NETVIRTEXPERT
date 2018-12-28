@@ -2,6 +2,7 @@
 #This is an example of a script developed to connect and backup cisco device configs using python
 #
 import paramiko
+import ftplib
 import time
 import os
 
@@ -95,6 +96,14 @@ if not os.path.exists(os.path.dirname(filepath)):
 with open(filepath, "w") as f:
     f.write(output)
     f.close()
+
+###FTP UPLOAD MORA SE SREDI###
+#session = ftplib.FTP('netvirtexpert.zapto.org','ra_ftp_user','csc0raftpneD1r@j0v0!')
+#os.chdir(os.path.dirname(filepath))
+#ftpfile = open("GigaKOM-2018-12-28-11-39-54", 'r')
+#session.storbinary('STOR ' + "ftpfile", file)
+#ftpfile.close()
+#session.quit()
 
 #disconnect
 remote_conn.send("exit\n")
