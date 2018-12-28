@@ -1,0 +1,1517 @@
+
+CME-INGRAM#show run
+Building configuration...
+
+
+Current configuration : 33443 bytes
+!
+! Last configuration change at 11:42:20 CET Tue Dec 25 2018 by misa.markovic
+! NVRAM config last updated at 10:24:29 CET-SUM Tue Oct 23 2018 by dragan.ilic
+! NVRAM config last updated at 10:24:29 CET-SUM Tue Oct 23 2018 by dragan.ilic
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname CME-INGRAM
+!
+boot-start-marker
+boot system flash:c2900-universalk9-mz.SPA.152-2.T3.bin
+boot-end-marker
+!
+!
+card type e1 0 0
+card type e1 0 1
+logging buffered 51200 warnings
+enable secret 4 Lt8YsoqRkOuHWgJp2weD2.JhcRFe7TJVBchUiwMuEoA
+!
+aaa new-model
+!
+!
+aaa group server radius group1
+ server 192.168.21.2
+!
+aaa authentication login default group radius local
+aaa authorization exec default group radius local 
+!
+!
+!
+!
+!
+aaa session-id common
+!
+clock timezone CET 1 0
+clock summer-time CET-SUMMER recurring last Sun Mar 2:00 last Sun Oct 3:00
+clock calendar-valid
+network-clock-participate wic 0 
+network-clock-participate wic 1 
+network-clock-select 1 E1 0/0/0
+!
+no ipv6 cef
+ip auth-proxy max-login-attempts 5
+ip admission max-login-attempts 5
+!
+!
+!
+no ip dhcp use vrf connected
+ip dhcp excluded-address 192.168.22.1
+ip dhcp excluded-address 192.168.22.99
+!
+ip dhcp pool IP_Tel
+ network 192.168.22.0 255.255.255.0
+ default-router 192.168.22.1 
+ option 150 ip 192.168.7.28 
+!
+!
+ip domain name ims.telekomsrbija.com
+ip host rrc.co.yu 192.168.24.1
+ip host ims.telekomsrbija.com 1.1.1.1
+ip host cic.demo.local 172.17.72.60
+ip dhcp-server 192.168.24.1
+ip cef
+login block-for 30 attempts 4 within 30
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+isdn switch-type primary-net5
+!
+crypto pki token default removal timeout 0
+!
+crypto pki trustpoint TP-self-signed-4282632600
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4282632600
+ revocation-check none
+ rsakeypair TP-self-signed-4282632600
+!
+!
+crypto pki certificate chain TP-self-signed-4282632600
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 34323832 36333236 3030301E 170D3133 30313138 32313330 
+  32355A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D34 32383236 
+  33323630 3030819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100D18E F26EDC05 2496E1FF 29F8437C 82161B02 54641BB8 8440B7FB 52C72560 
+  2EFE78CB 4BD2981E 9B508F81 8359A59D 32D13AB8 E1197F41 D844F203 A58CEA3E 
+  EAB90D74 7B308337 57E5710B 570F789B E6684864 2C59A81B 88BA0D84 4279CB45 
+  2029F8F6 6E8CFFEB E9B2C88B 485097C4 418EEA15 7479723F 62A23CD5 968DD3DF 
+  68610203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
+  551D2304 18301680 14D57797 859E9A50 18493E2D A27B3FD1 28273DAD 8E301D06 
+  03551D0E 04160414 D5779785 9E9A5018 493E2DA2 7B3FD128 273DAD8E 300D0609 
+  2A864886 F70D0101 05050003 81810027 4C062A4A FC86C7A1 900C7C65 3F10DCCC 
+  461500BE 37A054F5 4E30C0EC CC5145E9 3576668F 17404406 B7AA20F8 CB08452D 
+  757E39BE CF4C559B 7485BC1A 6A2DC8C9 1BDE8951 20420D1E 43AAA13E 314DC4D2 
+  62C4C0B6 692A73CD 89FFD85A 812FDB3D A97D6A6D 522CD3A7 8F1A4BEF 34B07E9B 
+  A54AF2B4 A0BF2411 7376DD97 C12563
+  	quit
+voice-card 0
+ dsp services dspfarm
+!
+!
+!
+voice service voip
+ ip address trusted list
+  ipv4 192.168.202.0 255.255.255.0
+  ipv4 192.168.200.0 255.255.255.0
+  ipv4 85.94.68.70 255.255.255.255
+  ipv4 85.94.68.75 255.255.255.255
+  ipv4 172.16.0.0 255.255.0.0
+  ipv4 192.168.22.0 255.255.255.0
+  ipv4 192.168.24.0 255.255.255.0
+  ipv4 10.1.1.0 255.255.255.0
+  ipv4 213.144.173.77 255.255.255.255
+  ipv4 10.0.0.2 255.255.255.255
+ allow-connections h323 to h323
+ allow-connections h323 to sip
+ allow-connections sip to h323
+ allow-connections sip to sip
+ supplementary-service h450.12
+ no supplementary-service sip moved-temporarily
+ no supplementary-service sip refer
+ fax protocol t38 version 0 ls-redundancy 0 hs-redundancy 0 fallback pass-through g711alaw
+ no fax-relay sg3-to-g3
+ h323
+  call preserve limit-media-detection
+ sip
+  bind media source-interface GigabitEthernet0/0
+  header-passing
+  registrar server expires max 600 min 60
+  early-offer forced
+  midcall-signaling passthru
+!
+voice class codec 1
+ codec preference 1 g711alaw
+ codec preference 2 g711ulaw
+ codec preference 3 g729r8
+ codec preference 4 g729br8
+ codec preference 5 g723ar53
+ codec preference 6 g723ar63
+ codec preference 7 g723r53
+ codec preference 8 g723r63
+!
+voice class sip-profiles 1
+ request ACK sdp-header Audio-Attribute modify "recvonly" "sendrecv" 
+ response 200 sdp-header Audio-Attribute modify "recvonly" "sendrecv" 
+ request REINVITE sdp-header Audio-Attribute modify "inactive" "sendrecv" 
+!
+voice class sip-profiles 100
+ request INVITE sip-header From modify "<sip:(.*)@213.144.173.77>" "<sip:\1@192.168.24.1>" 
+ request INVITE sip-header From modify "<sip:(.*)@213.144.173.77>" "<sip:\1@192.168.24.1>" 
+ request INVITE sip-header From modify "<sip:(.*)@213.144.173.77>" "<sip:\1@192.168.7.28>" 
+ request INVITE sip-header From modify "<sip:(.*)@213.144.173.77>" "<sip:\1@192.168.24.1>" 
+!
+voice class sip-profiles 2
+ request INVITE sip-header SIP-Req-URI modify "; SIP/2.0" ";user=phone SIP/2.0" 
+ request REINVITE sip-header SIP-Req-URI modify "; SIP/2.0" ";user=phone SIP/2.0" 
+ request ACK sdp-header Audio-Attribute modify "recvonly" "sendrecv" 
+ response 200 sdp-header Audio-Attribute modify "recvonly" "sendrecv" 
+ request REINVITE sdp-header Audio-Attribute modify "inactive" "sendrecv" 
+!
+!
+voice iec syslog
+voice cause-code 
+!
+voice register global
+ mode cme
+ source-address 192.168.24.1 port 5060
+ max-dn 3
+ max-pool 3
+ authenticate register
+ authenticate realm rrc.rs
+ timezone 23
+ time-format 24
+ date-format D/M/Y
+ create profile sync 3699269935507215
+!
+voice register dn  1
+ number 1234
+ name Test Goca
+ label Test Goca
+!
+voice register pool  1
+ no busy-trigger-per-button
+ id mac 0000.0000.0000
+ number 1 dn 1
+ dtmf-relay rtp-nte
+ username 1234 password 1234
+ codec g711ulaw
+!
+!
+voice statistics type iec
+voice statistics time-range since-reset
+voice statistics max-storage-duration day 7
+!
+voice translation-rule 1
+ rule 1 reject /^$/
+!
+voice translation-rule 10
+ rule 1 /^20\(..\)/ /6689439\1/
+ rule 2 /^10\(..\)/ /6689439\1/
+!
+voice translation-rule 11
+ rule 1 /^6689439\([5-9].\)/ /20\1/
+ rule 2 /^6689439\([34].\)/ /10\1/
+!
+voice translation-rule 12
+ rule 1 /^6/ /06/
+ rule 2 /^11\(.*\)/ /\1/
+ rule 3 /^2\(...$\)/ /2\1/
+!
+voice translation-rule 15
+ rule 1 /.*/ /1040/
+!
+voice translation-rule 20
+ rule 1 /^10\(..\)/ /1130810\1/
+!
+voice translation-rule 30
+ rule 1 /^8\(.*\)/ /\1/
+!
+voice translation-rule 31
+ rule 1 /^1.../ /381117850850/
+ rule 2 /^2.../ /381117850850/
+!
+voice translation-rule 40
+ rule 1 /1040/ /1046/
+!
+voice translation-rule 50
+ rule 1 /1040/ /1050/
+!
+!
+voice translation-profile DEZ_MOB
+ translate calling 12
+ translate called 50
+!
+voice translation-profile GSM-to-Land
+ translate called 11
+!
+voice translation-profile GreekSIP-to-IVR
+ translate called 15
+!
+voice translation-profile IP-to-PSTN
+ translate calling 20
+!
+voice translation-profile IP-to-SIP_Trunk
+ translate called 30
+!
+voice translation-profile Incoming_ANI
+ translate calling 12
+ translate called 40
+!
+voice translation-profile Land-to-GSM
+ translate calling 10
+!
+voice translation-profile Test
+ translate calling 1
+!
+!
+!
+license udi pid CISCO2911/K9 sn FCZ16337NB4
+license accept end user agreement
+hw-module pvdm 0/0
+!
+hw-module pvdm 0/1
+!
+!
+!
+archive
+ path tftp://192.168.21.3/
+ write-memory
+ time-period 1440
+file privilege 0
+username admin privilege 15 secret 4 OjUWii3O5AX4O25HKKPuVCNTjbwXzmn/CV9ocMcSEnY
+username dragan.ilic privilege 15 password 7 15302E220E2B262D266B74
+!
+redundancy
+!
+!
+!
+!
+!
+controller E1 0/0/0
+ framing NO-CRC4 
+ pri-group timeslots 1-31
+!
+controller E1 0/1/0
+ framing NO-CRC4 
+ pri-group timeslots 1-31
+!
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description LAN connection
+ ip address 192.168.24.1 255.255.255.0
+ duplex auto
+ speed auto
+ ntp disable
+ no keepalive
+!
+interface GigabitEthernet0/1
+ ip address 10.1.8.82 255.255.255.252
+ shutdown
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0:15
+ no ip address
+ encapsulation hdlc
+ isdn switch-type primary-net5
+ isdn incoming-voice voice
+ isdn bchan-number-order ascending 
+ no cdp enable
+!
+interface Serial0/1/0:15
+ no ip address
+ encapsulation hdlc
+ isdn switch-type primary-net5
+ isdn incoming-voice voice
+ isdn sending-complete
+ no cdp enable
+!
+ip forward-protocol nd
+!
+no ip http server
+ip http authentication local
+no ip http secure-server
+ip http timeout-policy idle 60 life 86400 requests 10000
+!
+ip dns server
+ip rtcp report interval 60 
+ip route 0.0.0.0 0.0.0.0 192.168.24.2
+!
+!
+ip radius source-interface GigabitEthernet0/0 
+!
+!
+tftp-server flash:term45.default.loads
+tftp-server flash:term65.default.loads
+tftp-server flash:ATA030204SCCP090202A.zup
+tftp-server flash:SCCP11.9-2-1S.loads
+tftp-server flash:term11.default.loads
+tftp-server flash:SCCP70.9-2-1S.loads
+tftp-server flash:term70.default.loads
+tftp-server flash:jar70sccp.9-2-1TH1-13.sbn
+tftp-server flash:dsp70.9-2-1TH1-13.sbn
+tftp-server flash:apps11.9-2-1TH1-13.sbn
+tftp-server flash:cnu11.9-2-1TH1-13.sbn
+tftp-server flash:S00105000400.sbn
+tftp-server flash:jar11sccp.9-2-1TH1-13.sbn
+tftp-server flash:cnu70.9-2-1TH1-13.sbn
+tftp-server flash:apps70.9-2-1TH1-13.sbn
+tftp-server flash:cvm70sccp.9-2-1TH1-13.sbn
+tftp-server flash:dsp11.9-2-1TH1-13.sbn
+tftp-server flash:cvm11sccp.9-2-1TH1-13.sbn~
+tftp-server flash:SCCP45.9-2-1S.loads
+tftp-server flash:apps45.9-2-1TH1-13.sbn
+tftp-server flash:cnu45.9-2-1TH1-13.sbn
+tftp-server flash:cvm45sccp.9-2-1TH1-13.sbn
+tftp-server flash:dsp45.9-2-1TH1-13.sbn
+tftp-server flash:jar45sccp.9-2-1TH1-13.sbn
+tftp-server flash:anyconnect-win-3.1.03103-k9.pkg
+tftp-server flash:SCCP69xx.9-2-1-0.loads
+tftp-server flash:CP7925G-1.4.1SR1.LOADS
+tftp-server flash:JSYSH-1.4.1SR1.SBN
+tftp-server flash:JUIH-1.4.1SR1.SBN
+tftp-server flash:APPSH-1.4.1SR1.SBN
+tftp-server flash:GUIH-1.4.1SR1.SBN
+tftp-server flash:WLANH-1.4.1SR1.SBN
+tftp-server flash:SYSH-1.4.1SR1.SBN
+tftp-server flash:TNUXH-1.4.1SR1.SBN
+tftp-server flash:TNUXRH-1.4.1SR1.SBN
+tftp-server flash:SCCP31.9-2-1S.loads
+radius-server host 192.168.21.2 key 7 04490A025E
+!
+radius server 192.168.21.2
+ key 7 04490A025E
+!
+!
+!
+control-plane
+!
+!
+voice-port 0/0/0:15
+!
+voice-port 0/1/0:15
+ !
+ !
+ !
+!
+!
+!
+mgcp profile default
+!
+!
+dial-peer voice 101 pots
+ call-block translation-profile incoming Test
+ call-block disconnect-cause incoming user-busy
+ incoming called-number 20[5-9].
+ direct-inward-dial
+ forward-digits all
+!
+dial-peer voice 203 pots
+ translation-profile outgoing Land-to-GSM
+ destination-pattern 906T
+ port 0/1/0:15
+ prefix 06
+!
+dial-peer voice 204 pots
+ translation-profile incoming GSM-to-Land
+ call-block translation-profile incoming Test
+ call-block disconnect-cause incoming user-busy
+ incoming called-number 6689439T
+ direct-inward-dial
+ forward-digits all
+!
+dial-peer voice 100 pots
+ translation-profile outgoing IP-to-PSTN
+ destination-pattern 9T
+ progress_ind alert enable 8
+ progress_ind progress enable 8
+ progress_ind connect enable 8
+ port 0/0/0:15
+!
+dial-peer voice 301 voip
+ description *** Voice Trunk Zagreb ***
+ destination-pattern 4[67].
+ session protocol sipv2
+ session target ipv4:192.168.202.2
+ incoming called-number [12]...
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 302 voip
+ description *** Voice Trunk Ljubljana ***
+ destination-pattern 5[89].
+ session protocol sipv2
+ session target ipv4:10.1.1.252
+ voice-class sip profiles 100
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+!
+dial-peer voice 1040 voip
+ translation-profile outgoing Incoming_ANI
+ shutdown
+ destination-pattern ^1040$
+ session protocol sipv2
+ session target ipv4:192.168.7.28
+ incoming called-number 1040
+ dtmf-relay rtp-nte
+ codec g711alaw
+ no vad
+!
+dial-peer voice 303 voip
+ description *** Voice Trunk Zagreb inbound from CUCM ***
+ session protocol sipv2
+ incoming called-number 46.
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 304 voip
+ description *** Voice Trunk Ljubljana inbound from CUCM ***
+ session protocol sipv2
+ incoming called-number 5[89].
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 3392 voip
+ translation-profile incoming GreekSIP-to-IVR
+ session protocol sipv2
+ incoming called-number .
+ codec g711alaw
+ no vad
+!
+dial-peer voice 9 voip
+ translation-profile outgoing Incoming_ANI
+ session protocol sipv2
+ incoming called-number ^9.
+ dtmf-relay rtp-nte
+ codec g711alaw
+ no vad
+!
+dial-peer voice 305 voip
+ description *** Voice Trunk Skoplje ***
+ destination-pattern 2[1256].
+ session protocol sipv2
+ session target ipv4:10.0.0.2
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 306 voip
+ description *** Voice Trunk Skoplje inbound from CUCM ***
+ session protocol sipv2
+ incoming called-number 2[1256].
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 8 voip
+ description CUCM-CUBE
+ session protocol sipv2
+ incoming called-number ^8.
+ voice-class codec 1  
+ voice-class sip bind control source-interface GigabitEthernet0/1
+ voice-class sip bind media source-interface GigabitEthernet0/1
+ dtmf-relay rtp-nte sip-notify
+ no vad
+!
+dial-peer voice 80 voip
+ description CUBE-Telecom
+ translation-profile outgoing IP-to-SIP_Trunk
+ destination-pattern 8.T
+ session protocol sipv2
+ session target sip-server
+ voice-class codec 1  
+ voice-class sip bind control source-interface GigabitEthernet0/1
+ voice-class sip bind media source-interface GigabitEthernet0/1
+ dtmf-relay rtp-nte sip-notify
+ no vad
+!
+dial-peer voice 405 voip
+ description *** Voice Trunk Tirana ***
+ destination-pattern 40.
+ session protocol sipv2
+ session target ipv4:10.2.1.2
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 406 voip
+ description *** Voice Trunk Tirana inbound from CUCM ***
+ session protocol sipv2
+ session target sip-server
+ incoming called-number 40.
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 2080 voip
+ translation-profile outgoing Incoming_ANI
+ destination-pattern ^20[5-8].$
+ session protocol sipv2
+ session target ipv4:192.168.7.28
+ dtmf-relay rtp-nte
+ codec g711alaw
+ no vad
+!
+dial-peer voice 2090 voip
+ translation-profile outgoing Incoming_ANI
+ destination-pattern ^209[0-7]
+ session protocol sipv2
+ session target ipv4:192.168.7.28
+ dtmf-relay rtp-nte
+ codec g711alaw
+ no vad
+!
+dial-peer voice 470 voip
+ description *** Voice Trunk Zagreb inbound from CUCM ***
+ session protocol sipv2
+ session target sip-server
+ incoming called-number 47.
+ voice-class sip bind control source-interface GigabitEthernet0/0
+ voice-class sip bind media source-interface GigabitEthernet0/0
+ codec g711alaw
+ no vad
+!
+dial-peer voice 10 voip
+ translation-profile outgoing Incoming_ANI
+ destination-pattern ^10[34].
+ session protocol sipv2
+ session target ipv4:192.168.7.28
+ incoming called-number 10[34].
+ dtmf-relay rtp-nte
+ codec g711alaw
+ no vad
+!
+dial-peer voice 1050 voip
+ translation-profile outgoing DEZ_MOB
+ destination-pattern 1050
+ session protocol sipv2
+ session target ipv4:192.168.7.28
+ dtmf-relay rtp-nte
+ codec g711alaw
+ no vad
+!
+dial-peer voice 1051 pots
+ translation-profile incoming DEZ_MOB
+ incoming called-number 1040
+ direct-inward-dial
+ forward-digits all
+!
+!
+presence
+!
+gateway 
+ media-inactivity-criteria all
+ timer receive-rtcp 4
+ timer receive-rtp 1200
+!
+sip-ua 
+ credentials username 3392 password 7 045952041D23491C0A011F1305 realm 213.144.173.77
+ credentials number 381117850850 username 381117850850@ims.telekomsrbija.com password 7 105C084C5C46455F5D realm ims.telekomsrbija.com
+ authentication username 381117850850 password 7 120B04424B5A5B507B
+ retry invite 2
+ retry register 2
+ registrar 1 ipv4:213.144.173.77 expires 3600
+ registrar 2 dns:ims.telekomsrbija.com expires 1000
+ sip-server dns:ims.telekomsrbija.com
+ host-registrar
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+telephony-service
+ max-ephones 50
+ max-dn 50
+ ip source-address 192.168.24.1 port 2000
+ timeouts interdigit 4
+ cnf-file location flash:
+ load 7911 SCCP11.9-2-1S.loads
+ load 7925 CP7925G-1.4.1SR1.LOADS
+ load 7931 term31.default.loads
+ load 7960-7940 P0030801SR02.loads
+ load 7970 SCCP70.9-2-1S.loads
+ load 6921 SCCP69xx.9-2-1-0.loads
+ time-zone 28
+ time-format 24
+ max-conferences 7 gain -6
+ web admin system name rrc_voice secret 5 $1$Y9TQ$Y3NQ0OEIteKOf.Itf18Lc1
+ dn-webedit 
+ time-webedit 
+ transfer-system full-consult
+ transfer-pattern .T
+ directory entry 1 2090 name Milanka Memon
+ directory entry 5 2085 name Milica Dobic
+ directory entry 6 2093 name Marina Negojevic
+ directory entry 7 2081 name Ana Bondzic
+ directory entry 8 2082 name Goran Lucic
+ directory entry 9 2096 name Tamara Novakovic
+ directory entry 10 2091 name Maja Ruzic
+ directory entry 11 2094 name Ivana Vukic
+ directory entry 13 2087 name Janko Andjelic
+ directory entry 14 2095 name Jasna Stojic
+ directory entry 15 2086 name Dusan Gojsovic
+ directory entry 16 2083 name Dragan Stefanovic
+ directory entry 17 2078 name Bojan Milidrag
+ directory entry 18 2073 name Mirjana Momcilovic
+ directory entry 19 2072 name Biljana Acamovic
+ directory entry 20 2079 name Jovana Nikolic
+ directory entry 21 2070 name Jelena Popovic
+ directory entry 22 2074 name Dusan Nesic
+ directory entry 23 2092 name Zoran Marcevic
+ directory entry 24 2089 name Zeljko Popovic
+ directory entry 25 2077 name Oliver Tijanic
+ directory entry 26 2065 name Uros Djordjevic
+ directory entry 27 2066 name Misa Miletic
+ directory entry 28 2067 name Slobodan Milidrag
+ directory entry 29 460 name Kristina Jelecevic
+ directory entry 30 461 name Ana Blazinic
+ directory entry 31 462 name Filip Matovic
+ directory entry 32 463 name Luka Prosic
+ directory entry 33 467 name Darko Habijanec
+ directory entry 34 468 name Kristijan Cvetko
+ directory entry 36 583 name Damir Fele
+ directory entry 37 584 name Samo Gabor
+ directory entry 38 585 name Neva Zajc
+ directory entry 39 587 name Natalija Blatnik
+ directory entry 40 588 name Jernej Vodopivec
+ directory entry 12 2084 name Dusan Dimitrijevic
+ directory entry 46 466 name Ivan Curcic
+ directory entry 50 2088 name Dragan Miladinovic
+ directory entry 51 2069 name Sanja Marinkovic
+ directory entry 53 2097 name Goran Prijovic
+ directory entry 55 2063 name Conf Room Moscow
+ directory entry 56 2062 name Aleksandar Gagovic
+ directory entry 54 2064 name Djordje Zdravkovic
+ directory entry 42 2059 name Igor Urosevic
+ directory entry 44 2058 name Predrag Zlaticanin
+ directory entry 45 1034 name Andjela Jovic
+ directory entry 57 1035 name Branko Rajblovic 
+ directory entry 43 1036 name Zoran Colic
+ directory entry 47 1037 name Gordana Miladinovic
+ directory entry 58 2060 name Nebojsa Avramovic
+ directory entry 48 2061 name Dusan Djorovic
+ directory entry 35 598 name Vesna Kaluza
+ directory entry 41 589 name Niko Snoj
+ directory entry 49 597 name Jure Pecar
+ directory entry 59 599 name Sinisa Kovac
+ directory entry 60 580 name Sabina Trampus
+ directory entry 61 586 name Zeljka Peterka
+ directory entry 62 212 name Ljubisav Lazarevic 
+ directory entry 63 217 name Aleksandar Velevski
+ directory entry 64 220 name Filip Siljanovski
+ directory entry 65 214 name Kristina Mulovska
+ directory entry 66 222 name Donco Doncevski
+ directory entry 67 218 name Gorana Konevska-Jankoska
+ directory entry 68 215 name Jovan Manevski
+ directory entry 69 221 name Orak Sejfula
+ directory entry 70 211 name Dijana Blazevska
+ directory entry 71 590 name Conference room (SL)
+ directory entry 72 1038 name Mladen Momcilovic
+ directory entry 73 1039 name Milan Jovic
+ directory entry 74 1041 name Vladimir Jakovljevic
+ directory entry 75 405 name Jelena Lazova
+ directory entry 76 401 name Sonila Bako
+ directory entry 77 402 name Elior Kulla
+ directory entry 78 404 name Jorida Jaupllari
+ directory entry 79 1042 name Jelena Kovacevic
+ directory entry 80 1043 name Teodora Popovic
+ directory entry 81 464 name Hrvoje Stajduhar
+ directory entry 82 465 name Anto Filipovic
+ directory entry 83 508 name Conference room (HR)
+ directory entry 52 2068 name Novica Bubanja
+ directory entry 3 2075 name Tatjana Milanovic
+ directory entry 2 2080 name Jelena Djordjevic 
+ directory entry 4 225 name Angel Sarbakov
+ create cnf-files version-stamp 7960 Apr 30 2017 09:51:26
+!
+!
+ephone-template  1
+ button-layout 7931 2
+!
+!
+ephone-dn  1  dual-line
+ number 2070 no-reg both
+ label RRC Office
+ name RRC Office
+!
+!
+ephone-dn  2  dual-line
+ number 2071 no-reg both
+ label RRC Office 2
+ name Sekretarica
+!
+!
+ephone-dn  3  dual-line
+ number 2072 no-reg both
+ label Biljana Acamovic
+ name Biljana Acamovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  4  dual-line
+ number 2073 no-reg both
+ label Mirjana Momcilovic
+ description Mirjana Momcilovic
+ name Mirjana Momcilovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  5  dual-line
+ number 2074 no-reg both
+ label Dusan Nesic
+ name Dusan Nesic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  7  dual-line
+ number 2093 no-reg both
+ label Marina Negojevic
+ name Marina Negojevic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  8  dual-line
+ number 2067 no-reg both
+ label Slobodan Milidrag
+ name Slobodan Milidrag
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  9
+ number 2083 no-reg primary
+ label Dragan Stefanovic
+ name Dragan Stefanovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  10  dual-line
+ number 2076 no-reg both
+ label Nikola Milovanovic
+ name Nikola Milovanovic
+ allow watch
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  12
+ number 2061 no-reg primary
+ label Dusan Djurovic
+ name Dusan Djurovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  13  dual-line
+ number 2082 no-reg both
+ label Goran Lucic
+ name Goran Lucic
+ allow watch
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  14  octo-line
+ number 2081 no-reg both
+ label Ana Bondzic
+ name Ana Bondzic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  15  dual-line
+ number 2084 no-reg both
+ label Dusan Dimitrijevic
+ name Dusan Dimitrijevic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  16  dual-line
+ number 2085 no-reg primary
+ label Milica Dobic
+ name Milica Dobic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  17  dual-line
+ number 2086 no-reg both
+ label Dusan Gojsovic
+ name Dusan Gojsovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  18  dual-line
+ number 2069 no-reg both
+ label Sanja Marinkovic
+ name Sanja Marinkovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  19
+ number 2089 no-reg primary
+ label Zeljko Popovic
+ name Zeljko Popovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  20
+ number 1038 no-reg primary
+ label Mladen Momcilovic
+ name Mladen Momcilovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  21  dual-line
+ number 2090 no-reg both
+ description Milanka Memon
+ name Milanka Memon
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  22
+ number 2087 no-reg primary
+ description Janko Andjelic
+ name Janko Andjelic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  23
+ number 2098 no-reg primary
+ name FAX
+!
+!
+ephone-dn  24
+ number 2099 no-reg primary
+ name PARADOX
+!
+!
+ephone-dn  25
+ number 2077 no-reg primary
+ label Oliver Tijanic
+ name Oliver Tijanic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  26  dual-line
+ number 2092 no-reg both
+ description Zoran Marcevic
+ name Zoran Marcevic
+ transfer-mode consult
+!
+!
+ephone-dn  27
+ number 1035 no-reg primary
+ label Branko Rajblovic
+ name Branko Rajblovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  28
+ number 2091 no-reg primary
+ label Maja Ruzic
+ name Maja Ruzic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  29  dual-line
+ number 2079 no-reg both
+ label Jovana Nikolic
+ name Jovana Nikolic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  30
+ number 1042 no-reg primary
+ label Jelena Kovacevic
+ name Jelena Kovacevic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  32
+ number 2078 no-reg primary
+ label Bojan Milidrag
+ name Bojan Milidrag
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  33
+ number 2066 no-reg primary
+ label Misa Miletic
+ description 2066
+ name Misa Miletic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  34
+ number 2065 no-reg primary
+ label Uros Djordjevic
+ description Uros Djordjevic
+ name Uros Djordjevic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  35
+ number 1034 no-reg primary
+ label Andjela Jovic
+ name Andjela Jovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  36
+ number 2064 no-reg primary
+ label Djordje Zdravkovic
+ name Djordje Zdravkovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  37
+ number 2095 no-reg primary
+ label Jasna Stojic
+ description Jasna Stojic
+ name Jasna Stojic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  38  octo-line
+ number 2063 no-reg both
+ label Conference Room MOSCOW
+ description Conference Room MOSCOW
+ name Conference Room MOSCOW
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  39
+ number 2062 no-reg primary
+ label Aleksandar Gagovic
+ description 2062
+ name Aleksandar Gagovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  40
+ number 2097 no-reg primary
+ label Goran Prijovic
+ description 2097
+ name Goran Prijovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  41
+ number 2060 no-reg primary
+ description Nebojsa Avramovic
+ name Nebojsa Avramovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  42  dual-line
+ number 2059 no-reg both
+ label Igor Urosevic
+ name Igor Urosevic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  43
+ number 2058 no-reg primary
+ label Predrag Zlaticanin
+ name Predrag Zlaticanin
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  44  dual-line
+ number 1037 no-reg both
+ label Gordana Miladinovic
+ name Gordana Miladinovic
+!
+!
+ephone-dn  45  dual-line
+ number 1036 no-reg both
+ label Zoran Colic
+ name Zoran Colic
+!
+!
+ephone-dn  46
+ number 1039
+ label Milan Jovic
+ name Milan Jovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  47  dual-line
+ number 1041 no-reg both
+ label Vladimir Jakovljevic
+ name Vladimir Jakovljevic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  48
+ number 2088 no-reg both
+ label Dragan Miladinovic
+ name Dragan Miladinovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  49  dual-line
+ number 1043
+ label Teodora Popovic
+ name Teodora Popovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone-dn  50  dual-line
+ number 2096
+ label Tamara Novakovic
+ name Tamara Novakovic
+ call-forward noan 2071 timeout 30
+!
+!
+ephone  1
+ device-security-mode none
+ mac-address 001B.535D.55A5
+ speed-dial 1 2090 label "Milanka_Memon"
+ speed-dial 2 2087 label "Janko_Andjelic"
+ speed-dial 3 2075 label "Mirjana_Momcilovic"
+ speed-dial 4 2081 label "Slobodan_Gogic"
+ speed-dial 5 2080 label "Djordje_Ristovic"
+ speed-dial 6 90652042118 label "Mobilni"
+ speed-dial 7 2082 label "Goran_Lucic"
+ speed-dial 8 2074 label "Dusan_Nesic"
+ speed-dial 9 2072 label "Biljana_Acamovic"
+ speed-dial 10 2066 label "Uros_Djordjevic"
+ speed-dial 11 2095 label "Jasna_Stojic"
+ speed-dial 12 2075 label "Slobodan_Stanacev"
+ speed-dial 13 2076 label "Nikola_Milovanovic"
+ speed-dial 14 2079 label "Jovana_Nikolic"
+ type 7970
+ button  1:1 2:2
+!
+!
+!
+ephone  2
+ device-security-mode none
+ mac-address 001B.D45F.FAAE
+ max-calls-per-button 2
+ type ata
+ button  1:24
+!
+!
+!
+ephone  3
+ device-security-mode none
+ mac-address 001B.5495.0BFE
+ type 7911
+ button  1:3
+!
+!
+!
+ephone  4
+ device-security-mode none
+ mac-address F029.2959.7B97
+ type 7962
+ button  1:4
+!
+!
+!
+ephone  5
+ device-security-mode none
+ mac-address E0D1.730A.3996
+ type 7942
+ button  1:5
+!
+!
+!
+ephone  6
+ device-security-mode none
+ mac-address F029.2959.7BAD
+ fastdial 1 900385993148892 name Ozren mob
+ blf-speed-dial 1 900385993148892# label "Ozren"
+ speed-dial 1 900385993148892# label "Ozren mob"
+ type 7962
+ button  1:16
+!
+!
+!
+ephone  7
+ device-security-mode none
+ mac-address ECC8.8211.C322
+ button  1:20
+!
+!
+!
+ephone  8
+ device-security-mode none
+ mac-address B4E9.B08C.35B8
+ speed-dial 1 93392448 label "Luka 6.Okt."
+ speed-dial 2 92286015 label "Aerodrom 6.Okt."
+ speed-dial 3 90038220662148 label "NISS Cg"
+ speed-dial 4 93016333 label "6.Okt. direkcija"
+ type 7962
+ button  1:26
+!
+!
+!
+ephone  9
+ device-security-mode none
+ mac-address 001B.5452.E1D9
+ button  1:9
+!
+!
+!
+ephone  10
+ device-security-mode none
+ description mac-address B4E9.B001.C3D5
+ mac-address B4E9.B001.C3D5
+ presence call-list
+ button  1:35
+!
+!
+!
+ephone  11
+ device-security-mode none
+ mac-address 001E.F728.1FE3
+ type 7970
+ button  1:38
+!
+!
+!
+ephone  12
+ device-security-mode none
+ mac-address D4D7.48FF.DDC6
+ type 7911
+ button  1:12
+!
+!
+!
+ephone  13
+ device-security-mode none
+ mac-address 1CE8.5DC9.7B7D
+ presence call-list
+ type 7942
+ button  1:13
+!
+!
+!
+ephone  15
+ device-security-mode none
+ mac-address 001B.D47D.88A9
+ button  1:15
+!
+!
+!
+ephone  17
+ device-security-mode none
+ mac-address 3C5E.C30C.188A
+ type 7942
+ button  1:17
+!
+!
+!
+ephone  18
+ device-security-mode none
+ mac-address 1BD4.5FFA.AE01
+ max-calls-per-button 2
+ type ata
+ button  1:23 2:24
+!
+!
+!
+ephone  20
+ device-security-mode none
+ mac-address 001E.4A34.8B94
+ type 7912
+ button  1:19
+!
+!
+!
+ephone  21
+ device-security-mode none
+ mac-address 001E.7AC4.2FB4
+ type 7970
+ button  1:21
+!
+!
+!
+ephone  22
+ device-security-mode none
+ mac-address B4E9.B08D.3628
+ type 7962
+ button  1:22
+!
+!
+!
+ephone  23
+ device-security-mode none
+ mac-address 001E.4AA9.388F
+ button  1:25
+!
+!
+!
+ephone  24
+ device-security-mode none
+ mac-address 34A8.4E61.CA58
+ type 6921
+ button  1:33
+!
+!
+!
+ephone  25
+ device-security-mode none
+ mac-address F029.2959.9CBA
+ type 7962
+ button  1:34
+!
+!
+!
+ephone  26
+ device-security-mode none
+ description mac-address 001E.4AA8.EB0B
+ mac-address 001E.4AA8.EB0B
+ button  1:47
+!
+!
+!
+ephone  27
+ device-security-mode none
+ mac-address 3C5E.C30C.1ABE
+ type 7942
+ button  1:42
+!
+!
+!
+ephone  28
+ device-security-mode none
+ description mac-address 001F.CA35.C664
+ mac-address 001F.CA35.C664
+ type 7911
+ button  1:49
+!
+!
+!
+ephone  29
+ device-security-mode none
+ mac-address 001F.CA36.0180
+ type 7911
+ button  1:48
+!
+!
+!
+ephone  30
+ device-security-mode none
+ no dnd feature-ring
+!
+!
+!
+ephone  31
+ device-security-mode none
+ description mac-address E0D1.730B.0A28
+ mac-address E0D1.730B.0A28
+ button  1:8
+!
+!
+!
+ephone  32
+ device-security-mode none
+ mac-address 9C57.ADD3.A19C
+ button  1:18
+!
+!
+!
+ephone  33
+ device-security-mode none
+ mac-address 001E.4A34.9650
+ button  1:32
+!
+!
+!
+ephone  34
+ device-security-mode none
+ description mac-address F029.2959.9E4E
+ mac-address F029.2959.9E4E
+ speed-dial 4 90652042080 label "DjordjeR mob"
+ type 7962
+ button  1:10
+!
+!
+!
+ephone  35
+ device-security-mode none
+ mac-address F029.2959.983D
+ type 7962
+!
+!
+!
+ephone  36
+ device-security-mode none
+ description mac-address 001F.6C80.8C99
+ mac-address 001F.6C80.8C99
+ type 7971
+ button  1:14
+!
+!
+!
+ephone  37
+ device-security-mode none
+ mac-address 001B.5452.EB9C
+ type 7911
+ button  1:7
+!
+!
+!
+ephone  40
+ device-security-mode none
+ mac-address 5CFF.3506.5947
+ type CIPC
+!
+!
+!
+ephone  41
+ device-security-mode none
+ mac-address 001E.4A34.9729
+ type 6921
+ button  1:36
+!
+!
+!
+ephone  42
+ device-security-mode none
+ mac-address 001E.4AA8.EE1E
+ type 7912
+ button  1:30
+!
+!
+!
+ephone  43
+ device-security-mode none
+ mac-address 2401.C73D.855F
+ type 6921
+ button  1:37
+!
+!
+!
+ephone  44
+ device-security-mode none
+ mac-address 3C5E.C30C.18D1
+ type 7942
+ button  1:29
+!
+!
+!
+ephone  45
+ device-security-mode none
+ description mac-address 001B.5452.E535
+ mac-address 001B.5452.E535
+ button  1:39
+!
+!
+!
+ephone  46
+ device-security-mode none
+ description mac-address D4D7.48FF.DD2A
+ mac-address D4D7.48FF.DD2A
+ type 7911
+ button  1:40
+!
+!
+!
+ephone  47
+ device-security-mode none
+ mac-address DCCE.C1F1.FD7E
+ type 7942
+ button  1:41
+!
+!
+!
+ephone  48
+ device-security-mode none
+ mac-address 001B.5452.E489
+ type 7911
+ button  1:43
+!
+!
+!
+ephone  49
+ device-security-mode none
+ description Gordana Miladinovic
+ mac-address F0B2.E579.5107
+ button  1:44
+!
+!
+!
+ephone  50
+ device-security-mode none
+ mac-address 34DB.FDE4.7EF2
+ type 6921
+ button  1:45
+!
+!
+!
+ephone  51
+ device-security-mode none
+ mac-address 2C3F.38C8.811D
+ type 7911
+ button  1:46
+!
+!
+!
+ephone  52
+ device-security-mode none
+ mac-address DCCE.C1F1.FCB8
+ type 7942
+ button  1:50
+!
+!
+!
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport input ssh
+ transport output ssh
+ stopbits 1
+line vty 0 4
+ exec-timeout 0 0
+ privilege level 15
+ transport input ssh
+line vty 5 15
+ exec-timeout 0 0
+ privilege level 15
+ transport input ssh
+!
+scheduler allocate 20000 1000
+!
+end
+
+CME-INGRAM#
